@@ -1,0 +1,92 @@
+---
+title: "Householder Matrices"
+format: html
+---
+
+The Householder matrix, also called the Householder reflection matrix, is 
+defined as $\pmb{H} = \pmb{I} - 2\pmb{u}\pmb{u}^T$. Here, $\pmb{u}$ is an
+arbitrary unit vector.
+
+$\pmb{H}$ is symmetric and orthogonal (must be square, obviously).
+
+**Proof**
+If $\pmb{H}$ is symmetric, then $\pmb{H} = \pmb{H}^T$. The proof is straight 
+forward and utilises the fact that $(AB)^T = B^TA^T)$.
+
+$$
+\begin{aligned}
+(\pmb{I} - 2\pmb{u}\pmb{u}^T)^T &= I^T - 2(U^T)^Tu^T = I - 2\pmb{u}\pmb{u}^T\\
+\pmb{H}^T &= \pmb{H}
+\end{aligned}
+$$
+thus, $\pmb{H}$ is symmetric. Next, we need to demonstrate that $\pmb{H}$ is
+orthogonal. To do this, we must show that $\pmb{H}^{-1} = \pmb{H}^T$. If this is
+the case, then $\pmb{H}\pmb{H}^T = \pmb{I}$.
+
+$$
+\begin{aligned}
+\pmb{H}\pmb{H}^T &= (\pmb{I} - 2\pmb{u}\pmb{u}^T)(\pmb{I} - 2\pmb{u}\pmb{u}^T)\\
+&= \pmb{I}^2 - 2\pmb{I}\pmb{u}\pmb{u}^T -  2\pmb{I}\pmb{u}\pmb{u}^T + 4\pmb{u}\pmb{u}^T\pmb{u}\pmb{u}^T\\
+&= \pmb{I} - 4\pmb{u}\pmb{u}^T + 4\pmb{u}\pmb{u}^T\\
+&= \pmb{I}
+\end{aligned}
+$$
+This works because $\pmb{u}$ is a unit vector, and so $\pmb{u}^T\pmb{u} = 1$.
+
+So we have demonstrated that $\pmb{H}$ is both symmetric and orthogonal. 
+Finally, we want to demonstrate that The product of an orthogonal matrices is 
+also an orthogonal matrix.
+
+**Proof**
+
+Let $\pmb{Q}$ be an orthogonal matrix that is the product of orthogonal matrices
+$\pmb{Q}_1, \pmb{Q}_2, ..., \pmb{Q}_n$. We want to show that 
+$\pmb{Q}\pmb{Q}^T = \pmb{I}$.
+
+$$
+\begin{aligned}
+\pmb{Q} &= \pmb{Q}_1\pmb{Q}_2\cdots\pmb{Q}_n\\
+\pmb{Q}^T &= \pmb{Q}_n^T\cdots\pmb{Q}_2^T\pmb{Q}_1^T\\
+\pmb{Q}^T\pmb{Q} &= \pmb{Q}_n^T\cdots\pmb{Q}_2^T\pmb{Q}_1^T\pmb{Q}_1\pmb{Q}_2\cdots\pmb{Q}_n
+\end{aligned}
+$$
+At this point, notice that all of the $\pmb{Q}_i^T\pmb{Q}_i$ match up, producing
+a cascade of identity matrices. The entire RHS simplifies down to a single
+identity matrix, proving that $\pmb{Q}^T\pmb{Q} = \pmb{I}$. This means that 
+$\pmb{Q}$ must be orthogonal and the proof of the theorem is complete.
+
+```{r}
+rm(list=ls())
+library(matlib)
+mag <- function(a) {
+  magnitude <- as.numeric(t(a)%*%a) |> sqrt()
+  return(magnitude)
+}
+I <- diag(c(1,1), ncol=2)
+a <- matrix(c(1,1), ncol=1)
+u <- a/mag(a)
+H <- I - 2*u%*%t(u)
+ltx_H <- latexMatrix(round(H,0))$matrix
+```
+
+Example of the properties of a Householder matrix. Given the choice of 
+$\pmb{u}$ (which is not arbitrary, but depending on the particular matrix that
+we are decomposing), we can construct $\pmb{H}$ and demonstrate its useful
+properties.
+
+Recall that $\pmb{H} =\pmb{I} - 2\pmb{u}\pmb{u}^T$. Given that 
+$\pmb{u}^T = (1,1)$, then
+
+$\pmb{H} = `r ltx_H`$
+
+It's evident that $\pmb{H}$ is symmetric, but is it orthogonal? If it is, then
+$\pmb{H}\pmb{H}^T = \pmb{I}$. The following code tests this for our $\pmb{H}$
+and demonstrates that this is this is the case.
+
+```{r}
+all.equal(H%*%t(H), I)
+```
+
+
+
+

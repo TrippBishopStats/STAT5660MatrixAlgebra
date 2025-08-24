@@ -1,0 +1,23 @@
+---
+title: "QR Decomposition"
+format: html
+---
+
+```{r}
+library(matlib)
+
+X <- model.matrix(~hp+wt, data=mtcars)
+y <- matrix(mtcars$mpg, ncol=1)
+
+qr_decomp <- qr(X)
+
+Q <- qr.Q(qr_decomp)
+R <- qr.R(qr_decomp)
+
+solve(R)%*%t(Q)%*%y
+```
+
+```{r}
+lm(mpg~hp+wt, data=mtcars)
+```
+
